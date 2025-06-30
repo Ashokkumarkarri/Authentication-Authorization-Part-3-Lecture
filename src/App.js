@@ -13,9 +13,9 @@ const App = () => (
   <BrowserRouter>
     <Switch>
       <Route exact path="/login" component={LoginForm} />
-      <ProtectedRoute />
-      <Route exact path="/products" component={Products} />
-      <Route exact path="/cart" component={Cart} />
+      <ProtectedRoute exact path="/" component={Home} />
+      <ProtectedRoute exact path="/products" component={Products} />
+      <ProtectedRoute exact path="/cart" component={Cart} />
       <Route component={NotFound} />
     </Switch>
   </BrowserRouter>

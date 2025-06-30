@@ -205,3 +205,134 @@ For now, just focus on understanding the logic. In the next commit, we’ll make
 📦 In the next commit, we will make this `Wrapper Component` reusable for rest of  the routes.
 
 ---
+
+# ✅ Commit 3: Reusable Wrapper Component
+
+In this commit, we will make our wrapper component reusable for all the routes like Home, Products, and Cart.
+
+---
+
+## 🛠️ Old `ProtectedRoute` (Not Reusable)
+
+In the old version, `ProtectedRoute` was hardcoded to only protect the Home route.
+
+```js
+// Old ProtectedRoute
+import {Route, Redirect} from 'react-router-dom'
+import Cookies from 'js-cookie'
+
+import Home from '../Home'
+
+const ProtectedRoute = () => {
+  const token = Cookies.get('jwt_token')
+  if (token === undefined) {
+    return <Redirect to="/login" />
+  }
+
+  return <Route exact path="/" component={Home} />
+}
+
+export default ProtectedRoute
+```
+
+This is not reusable because the route (`/`) and the component (`Home`) are hardcoded inside.
+
+---
+
+## 🔁 New `ProtectedRoute` (Reusable)
+
+In the new version, we pass props like `path`, `component`, and `exact` from `App.js` to make this component reusable.
+
+```js
+// New ProtectedRoute
+import {Route, Redirect} from 'react-router-dom'
+import Cookies from 'js-cookie'
+
+const ProtectedRoute = props => {
+  const token = Cookies.get('jwt_token')
+  if (token === undefined) {
+    return <Redirect to="/login" />
+  }
+
+  return <Route {...props} />
+}
+
+export default ProtectedRoute
+```
+
+With `{...props}`, we are spreading all the props (like `path`, `exact`, and `component`) into the `<Route />`.
+
+---
+
+## 🧾 App.js
+
+### ❌ Old Code (Before Using Reusable `ProtectedRoute`)
+
+```js
+import {BrowserRouter, Route, Switch} from 'react-router-dom'
+
+import LoginForm from './components/LoginForm'
+import Home from './components/Home'
+import ProtectedRoute from './components/ProtectedRoute'
+import Products from './components/Products'
+import Cart from './components/Cart'
+import NotFound from './components/NotFound'
+
+import './App.css'
+
+const App = () => (
+  <BrowserRouter>
+    <Switch>
+      <Route exact path="/login" component={LoginForm} />
+      <ProtectedRoute />
+      <Route exact path="/products" component={Products} />
+      <Route exact path="/cart" component={Cart} />
+      <Route component={NotFound} />
+    </Switch>
+  </BrowserRouter>
+)
+
+export default App
+```
+
+Only Home was protected and that too without passing any route info.
+
+---
+
+### ✅ New Code (Reusable `ProtectedRoute` Used Everywhere)
+
+Now we pass the route path and component as props to the `ProtectedRoute`.  
+This allows it to work for multiple routes like `/`, `/products`, and `/cart`.
+
+```js
+import {BrowserRouter, Route, Switch} from 'react-router-dom'
+
+import LoginForm from './components/LoginForm'
+import Home from './components/Home'
+import ProtectedRoute from './components/ProtectedRoute'
+import Products from './components/Products'
+import Cart from './components/Cart'
+import NotFound from './components/NotFound'
+
+import './App.css'
+
+const App = () => (
+  <BrowserRouter>
+    <Switch>
+      <Route exact path="/login" component={LoginForm} />
+      <ProtectedRoute exact path="/" component={Home} />
+      <ProtectedRoute exact path="/products" component={Products} />
+      <ProtectedRoute exact path="/cart" component={Cart} />
+      <Route component={NotFound} />
+    </Switch>
+  </BrowserRouter>
+)
+
+export default App
+```
+
+✅ Now `ProtectedRoute` can be reused for all routes that need protection!
+
+📦 In the next commit: we will integrate more API's to our app
+
+---
