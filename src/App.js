@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Switch} from 'react-router-dom'
+import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 
 import LoginForm from './components/LoginForm'
 import Home from './components/Home'
@@ -15,7 +15,8 @@ const App = () => (
       <Route exact path="/" component={Home} />
       <Route exact path="/products" component={Products} />
       <Route exact path="/cart" component={Cart} />
-      <Route component={NotFound} />
+      <Route exact path="/not-found" component={NotFound} />
+      <Redirect to="/not-found" />
     </Switch>
   </BrowserRouter>
 )
