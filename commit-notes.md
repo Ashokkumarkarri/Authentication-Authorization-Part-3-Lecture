@@ -429,3 +429,43 @@ In the next commit, we will render the data we received from the API to the UI.
 in the next commit we will render the data to Ui 
 
 ---
+
+# ✅ Commit 5: Updating to UI
+
+In this commit, we will update the **UI with the actual data** from the API.
+
+When we get data from the API, it comes in **snake_case**.  
+But in the frontend (React), we prefer using **camelCase**.
+
+So first, we will convert the data from snake_case to camelCase,  
+then we will update the component state with that formatted data.
+
+---
+
+### ✅ Example Code:
+
+```js
+if (response.ok === true) {
+  // response.ok — if it's true, that means the API call was successful
+  const fetchedData = await response.json()
+  // It converts the API response (which is in JSON format) into a JavaScript object
+  // so that you can use the data easily in your code.
+
+  // The data we get from the backend will be in snake_case;
+  // for the frontend, we need it as camelCase
+  const updatedData = fetchedData.products.map(i => ({
+    title: i.title,
+    brand: i.brand,
+    price: i.price,
+    id: i.id,
+    imageUrl: i.image_url,
+    rating: i.rating,
+  }))
+
+  // Now we update the component's state with this formatted data
+  this.setState({productsList: updatedData})
+}
+
+```
+
+---

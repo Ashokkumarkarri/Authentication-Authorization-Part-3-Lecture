@@ -11,7 +11,7 @@ class AllProductsSection extends Component {
 
   componentDidMount() {
     // componentDidMount is a life cycle method
-    this.getProducts(0)
+    this.getProducts()
   }
 
   getProducts = async () => {
@@ -24,7 +24,21 @@ class AllProductsSection extends Component {
       },
     }
     const response = await fetch(apiUrl, options)
-    console.log(response)
+    if (response.ok === true) {
+      // we have response.ok — if it's true, that means the API call was success
+      const fetchedData = await response.json() //  It converts the API response (which is in JSON format) into a JavaScript object so that you can use the data easily in your code.
+      // whatever data we got from the backend will be in snake case; for frontend, we need it as camel case
+      const updatedData = fetchedData.products.map(i => ({
+        title: i.title,
+        brand: i.brand,
+        price: i.price,
+        id: i.id,
+        imageUrl: i.image_url,
+        rating: i.rating,
+      }))
+
+      this.setState({productsList: updatedData})
+    }
   }
 
   renderProductsList = () => {
