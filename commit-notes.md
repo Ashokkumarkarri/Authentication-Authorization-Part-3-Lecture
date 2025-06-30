@@ -336,3 +336,96 @@ export default App
 📦 In the next commit: we will integrate more API's to our app
 
 ---
+# ✅ Commit 4: Implementing APIs
+
+In Amazon, we have exclusive **Prime Deals** which are only for *Prime users*,  
+whereas **All Products** are for both *Prime* and *Non-Prime* users.
+
+---
+
+## We have two APIs:
+1. **Get Products**: This API gives all the products (visible to both Prime and Non-Prime users).
+2. **Get Exclusive Prime Deals**: Only for Prime users.
+
+---
+
+### Now let’s work with **Get Products API** first:
+
+We will do an HTTP request with `GET` method to the following URL:
+
+https://apis.ccbp.in/products
+
+
+
+From this API, we will get a list of all the product details.
+
+---
+
+### Who can access this API?
+✅ Both Prime and Non-Prime users who are authenticated (logged in) can access the `Get Products API`.
+
+❌ This API is only available to authenticated users.  
+So how does the API know whether the user is authenticated?
+
+🔐 Answer: By using the **JWT Token**.
+
+---
+
+### 🔐 JWT in API Request
+
+The client (our app) must send the JWT token in the **Authorization header** while making API requests.
+
+Format of the header should be:
+Authorization: Bearer jwt_token
+
+
+
+---
+
+## 🧩 File Structure
+
+We have a file called:
+AllProductsSection/index.js
+
+
+
+This file already has the prefilled product UI code.
+
+✅ Now all we need to do is:
+- Call the API
+- Integrate the data into the UI
+
+---
+
+## ✅ Where to call the API?
+
+We call the API inside the `componentDidMount()` method because it's a lifecycle method in React Class Component.
+
+### Code:
+```js
+componentDidMount() {
+  // componentDidMount is a life cycle method
+  this.getProducts(0)
+}
+
+getProducts = async () => {
+  const apiUrl = 'https://apis.ccbp.in/products'
+  const jwtToken = Cookies.get('jwt_token')
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+    },
+  }
+  const response = await fetch(apiUrl, options)
+  console.log(response)
+}
+In the next commit, we will render the data we received from the API to the UI.
+
+
+```
+
+
+in the next commit we will render the data to Ui 
+
+---
