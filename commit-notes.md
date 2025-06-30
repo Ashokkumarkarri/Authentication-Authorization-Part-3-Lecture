@@ -95,3 +95,113 @@ export default App
 
 ---
 
+
+# ✅ Commit 2: Redirection Logic
+
+## 🔁 Redirection Logic
+- If user is not authenticated and trying to access Home route, redirect to Login route.
+- If user did not log in and tries to access Products or Cart routes, we also want to redirect to Login route.
+
+We already wrote the logic in the Home component to check whether the user is authenticated. If not, we redirected them to the Login page. Here's how we did it:
+
+```js
+import {Redirect} from 'react-router-dom'
+import Cookies from 'js-cookie'
+
+const Home = () => {
+  const jwt = Cookies.get('jwt_token')
+  if (jwt === undefined) {
+    return <Redirect to="/login" />
+  }
+
+  return (
+    <>
+      <Header />
+      <div className="home-container">
+        <div className="home-content">
+          <h1 className="home-heading">Clothes That Get YOU Noticed</h1>
+          <img
+          ...
+          ...
+          ...
+          ..
+```
+
+Now we need to write the same logic for Products, Cart, etc.  
+👉 Instead of copying the same logic again and again, we use a concept called **"Wrapper Component"**.
+
+---
+
+## 🔐 Wrapper Component
+
+Redirection logic can be reused by creating a reusable component.  
+This is called a **Wrapper Component** — it wraps around a route and handles common logic.
+
+### ✅ Protected Route
+
+`ProtectedRoute` is our wrapper component. It will handle the authentication check and return the route component only if the user is logged in.
+
+📄 File: `src/components/ProtectedRoute/index.js`
+
+For now, focus only on the logic. Later, we’ll make it reusable for all routes.
+
+```js
+// File: ./components/ProtectedRoute/index.js
+
+import {Route, Redirect} from 'react-router-dom'
+import Cookies from 'js-cookie'
+
+import Home from '../Home'
+
+const ProtectedRoute = () => {
+  const token = Cookies.get('jwt_token')
+  if (token === undefined) {
+    return <Redirect to="/login" />
+  }
+
+  return <Route exact path="/" component={Home} />
+}
+
+export default ProtectedRoute
+```
+
+---
+
+### 🔗 Using ProtectedRoute in App
+
+```js
+// File: App.js
+
+import {BrowserRouter, Route, Switch} from 'react-router-dom'
+
+import LoginForm from './components/LoginForm'
+import Home from './components/Home'
+import ProtectedRoute from './components/ProtectedRoute' // imported ProtectedRoute
+import Products from './components/Products'
+import Cart from './components/Cart'
+import NotFound from './components/NotFound'
+
+import './App.css'
+
+const App = () => (
+  <BrowserRouter>
+    <Switch>
+      <Route exact path="/login" component={LoginForm} />
+      <ProtectedRoute />                                    // this is what we added 
+      <Route exact path="/products" component={Products} />
+      <Route exact path="/cart" component={Cart} />
+      <Route component={NotFound} />
+    </Switch>
+  </BrowserRouter>
+)
+
+export default App
+```
+
+✅ When it comes to the Home route, the `ProtectedRoute` will check whether the user is authenticated. If not, it will redirect to the Login page, if user is authenticated it will redirect to home route.
+
+For now, just focus on understanding the logic. In the next commit, we’ll make this reusable for other routes like Products and Cart.
+
+📦 In the next commit, we will make this `Wrapper Component` reusable for rest of  the routes.
+
+---
